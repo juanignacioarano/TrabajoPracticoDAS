@@ -84,6 +84,7 @@ namespace DAL
         public void ExportarStoredProcedureAXml(string storedProcedureName, string filePath, SqlParameter[] parametros = null)
         {
             Leer(storedProcedureName, parametros).WriteXml(filePath);
+            MessageBox.Show("Exportado con exito en la ruta: " + filePath);
         }
 
     }

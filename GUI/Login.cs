@@ -58,5 +58,10 @@ namespace GUI
                 btnIniciarSesion.PerformClick();
             }
         }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+            txtUsuario.Select();
+        }
     }
 }

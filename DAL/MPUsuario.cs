@@ -36,7 +36,7 @@ namespace DAL
                 }
             };
 
-            acceso.Escribir("SP_LOGIN_USUARIO", parametros);
+            acceso.Leer("SP_LOGIN_USUARIO", parametros);
 
             return (bool)parametros[2].Value;
         }

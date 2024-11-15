@@ -18,6 +18,7 @@ namespace GUI
         public AltaMedico()
         {
             InitializeComponent();
+            clbEspecialidades.ItemCheck += clbEspecialidades_ItemCheck;
         }
 
         List<Especialidad> listaEspecialidadesOriginal = new List<Especialidad>();
@@ -36,16 +37,55 @@ namespace GUI
             dgvMedicos.DataSource = new BLLMedico().ListarMedicos();
         }
 
+        private List<int> especialidadesSeleccionadas = new List<int>();
+
+
+        private void clbEspecialidades_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var especialidad = (Especialidad)clbEspecialidades.Items[e.Index];
+
+            if (e.NewValue == CheckState.Checked)
+            {
+                if (!especialidadesSeleccionadas.Contains(especialidad.IdEspecialidad))
+                {
+                    especialidadesSeleccionadas.Add(especialidad.IdEspecialidad);
+                }
+            }
+            else
+            {
+                if (especialidadesSeleccionadas.Contains(especialidad.IdEspecialidad))
+                {
+                    especialidadesSeleccionadas.Remove(especialidad.IdEspecialidad);
+                }
+            }
+        }
+
         private void FiltrarEspecialidades(string filtro)
         {
             var especialidadesFiltradas = listaEspecialidadesOriginal
                 .Where(especialidad => especialidad.Descripcion.ToLower().Contains(filtro.ToLower()))
                 .ToList();
 
+            clbEspecialidades.DataSource = null;
             clbEspecialidades.DataSource = especialidadesFiltradas;
             clbEspecialidades.DisplayMember = "Descripcion";
             clbEspecialidades.ValueMember = "IdEspecialidad";
+
+            for (int i = 0; i < clbEspecialidades.Items.Count; i++)
+            {
+                var especialidad = (Especialidad)clbEspecialidades.Items[i];
+                if (especialidadesSeleccionadas.Contains(especialidad.IdEspecialidad))
+                {
+                    clbEspecialidades.SetItemChecked(i, true);
+                }
+            }
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            FiltrarEspecialidades(txtFiltro.Text);
+        }
+
 
 
         private void btnAgregarMedico_Click(object sender, EventArgs e)
@@ -68,11 +108,6 @@ namespace GUI
 
             new BLLMedico().AgregarEspecialidades(idMedico, especialidades);
             ActualizarGrilla();
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            FiltrarEspecialidades(txtFiltro.Text);
         }
 
         private void dgvMedicos_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -141,7 +176,6 @@ namespace GUI
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-
             txtDni.Text = "";
             txtMatricula.Text = "";
             txtNombre.Text = "";
@@ -157,6 +191,19 @@ namespace GUI
         private void btnMenu_Click(object sender, EventArgs e)
         {
             this.Hide();
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            BLLMedico bLLMedico = new BLLMedico();
+            Medico medico = new Medico
+            {
+                IdMedico = Convert.ToInt32(txtId.Text),
+                Nombre = txtNombre.Text,
+                Apellido = txtApellido.Text,
+                Matricula = txtMatricula.Text,
+                Dni = txtDni.Text
+            };
         }
     }
 }

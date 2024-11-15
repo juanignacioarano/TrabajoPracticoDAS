@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.btnLimpiar = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnEliminar = new System.Windows.Forms.Button();
             this.btnModificar = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -56,15 +56,16 @@
             this.btnLimpiar.Text = "Limpiar";
             this.btnLimpiar.UseVisualStyleBackColor = false;
             // 
-            // button2
+            // btnEliminar
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button2.Location = new System.Drawing.Point(106, 180);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(157, 26);
-            this.button2.TabIndex = 117;
-            this.button2.Text = "Eliminar";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btnEliminar.Location = new System.Drawing.Point(106, 180);
+            this.btnEliminar.Name = "btnEliminar";
+            this.btnEliminar.Size = new System.Drawing.Size(157, 26);
+            this.btnEliminar.TabIndex = 117;
+            this.btnEliminar.Text = "Eliminar";
+            this.btnEliminar.UseVisualStyleBackColor = false;
+            this.btnEliminar.Click += new System.EventHandler(this.button2_Click);
             // 
             // btnModificar
             // 
@@ -195,7 +196,7 @@
             this.Controls.Add(this.btnMenu);
             this.Controls.Add(this.btnXmlEspecialidades);
             this.Controls.Add(this.btnLimpiar);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnModificar);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label8);
@@ -218,7 +219,7 @@
 
         #endregion
         private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnEliminar;
         private System.Windows.Forms.Button btnModificar;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label8;

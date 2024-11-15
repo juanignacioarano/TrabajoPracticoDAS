@@ -39,7 +39,15 @@ namespace GUI
 
         private void btnAgregarMedico_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Debe completar todos los campos", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             bLLEspecialidad.AgregarEspecialidad(txtNombre.Text);
+            txtNombre.Text = "";
+            listaEspecialidadesOriginal = bLLEspecialidad.ListarEspecialidades();
+            dgvEspecialidades.DataSource = listaEspecialidadesOriginal;
         }
 
         private void GestionEspecialidades_Load(object sender, EventArgs e)
@@ -56,6 +64,14 @@ namespace GUI
         private void btnMenu_Click(object sender, EventArgs e)
         {
             this.Hide();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int idEspecialidad = 0;
+            idEspecialidad = Convert.ToInt32(txtId.Text);
+            bLLEspecialidad.EliminarEspecialidad(idEspecialidad);
+
         }
     }
 }

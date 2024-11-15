@@ -42,7 +42,7 @@ namespace DAL
             {
                 Especialidad especialidad = new Especialidad();
                 especialidad.IdEspecialidad = int.Parse(item["IdEspecialidad"].ToString());
-                especialidad.Descripcion = item["Descripcion"].ToString();
+                //especialidad.Descripcion = item["Descripcion"].ToString();
                 especialidades.Add(especialidad);
             }
             return especialidades;
