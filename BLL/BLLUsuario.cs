@@ -17,9 +17,27 @@ namespace BLL
             return mapper.RegistrarUsuario(username, password);
         }
 
+        public int EliminarUsuario(int id)
+        {
+            return mapper.EliminarUsuario(id);
+        }
+        public int ModificarUsuario(Usuario usuario)
+        {
+            return mapper.ModificarUsuario(usuario);
+        }
+        public List<Usuario> ListarUsuarios()
+        {
+            return mapper.ListarUsuarios();
+        }
+
         public bool LoginUsuario(string username, string password)
         {
             return mapper.LoginUsuario(username, password);
+        }
+
+        public void ExportarXML()
+        {
+            mapper.ExportarXML();
         }
 
     }

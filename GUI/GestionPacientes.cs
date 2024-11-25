@@ -26,6 +26,7 @@ namespace GUI
 
         private void LimpiarFormulario()
         {
+            txtId.Clear();
             txtNombre.Clear();
             txtApellido.Clear();
             txtDni.Clear();
@@ -35,6 +36,8 @@ namespace GUI
             txtNumeroDeAfiliado.Clear();
             cmbGenero.SelectedIndex = -1;
             dtpFechaDeNacimiento.Value = DateTime.Now;
+            btnEstado.Text = "Activar/Desactivar";
+            btnEstado.BackColor = Color.Gray;
         }
 
         public void FiltrarPacientes()
@@ -65,44 +68,25 @@ namespace GUI
             if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
                 string.IsNullOrWhiteSpace(txtApellido.Text) ||
                 string.IsNullOrWhiteSpace(txtDni.Text) ||
-                string.IsNullOrWhiteSpace(txtDireccion.Text) ||
                 string.IsNullOrWhiteSpace(txtTelefono.Text) ||
-                string.IsNullOrWhiteSpace(txtEmail.Text) ||
+                string.IsNullOrWhiteSpace(txtDireccion.Text) ||
+                txtEmail.IsEmpty ||
                 string.IsNullOrWhiteSpace(cmbGenero.Text) ||
                 string.IsNullOrWhiteSpace(txtNumeroDeAfiliado.Text))
-
             {
                 MessageBox.Show("Todos los campos son obligatorios.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            if (!int.TryParse(txtDni.Text, out _))
+            if (!txtEmail.IsValidEmail())
             {
-                MessageBox.Show("El DNI debe ser numérico.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            if (!long.TryParse(txtTelefono.Text, out _))
-            {
-                MessageBox.Show("El teléfono debe ser numérico.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("El email ingresado no es válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             return true;
         }
 
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         private void btnAgregarMedico_Click(object sender, EventArgs e)
         {
@@ -145,9 +129,107 @@ namespace GUI
             FiltrarPacientes();
         }
 
-        private void btnMenu_Click(object sender, EventArgs e)
+        private void btnModificar_Click(object sender, EventArgs e)
         {
-            this.Hide();
+
+            if (!ValidarCampos())
+                return;
+
+            Paciente paciente = new Paciente
+            {
+                IdPaciente = Convert.ToInt32(txtId.Text),
+                Nombre = txtNombre.Text,
+                Apellido = txtApellido.Text,
+                DNI = txtDni.Text,
+                Direccion = txtDireccion.Text,
+                Telefono = txtTelefono.Text,
+                Email = txtEmail.Text,
+                FechaNacimiento = dtpFechaDeNacimiento.Value,
+                NumeroDeAfiliado = txtNumeroDeAfiliado.Text,
+                Genero = cmbGenero.SelectedItem.ToString()
+            };
+
+            new BLLPaciente().ModificarPaciente(paciente);
+
+            ActualizarDataGridView();
+
+            LimpiarFormulario();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Debe seleccionar un paciente", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            } 
+
+            if(estado)
+            {
+                DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea desactivar el paciente?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    new BLLPaciente().ActualizarEstadoPaciente(Convert.ToInt32(txtId.Text), false);
+                }
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea activar el paciente?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    new BLLPaciente().ActualizarEstadoPaciente(Convert.ToInt32(txtId.Text), true);
+                }
+            }
+
+            ActualizarDataGridView();
+            LimpiarFormulario();
+        }
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            LimpiarFormulario();
+        }
+
+        bool estado = true;
+
+        private void dgvPaciente_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex == -1)
+                return;
+
+            DataGridViewRow row = dgvPaciente.Rows[e.RowIndex];
+            txtId.Text = row.Cells["IdPaciente"].Value.ToString();
+            txtNombre.Text = row.Cells["Nombre"].Value.ToString();
+            txtApellido.Text = row.Cells["Apellido"].Value.ToString();
+            txtDni.Text = row.Cells["DNI"].Value.ToString();
+            txtDireccion.Text = row.Cells["Direccion"].Value.ToString();
+            txtTelefono.Text = row.Cells["Telefono"].Value.ToString();
+            txtEmail.Text = row.Cells["Email"].Value.ToString();
+            dtpFechaDeNacimiento.Value = Convert.ToDateTime(row.Cells["FechaNacimiento"].Value);
+            txtNumeroDeAfiliado.Text = row.Cells["NumeroDeAfiliado"].Value.ToString();
+            cmbGenero.SelectedItem = row.Cells["Genero"].Value.ToString();
+            estado = Convert.ToBoolean(row.Cells["Activo"].Value);
+
+            if (estado)
+            {
+                btnEstado.Text = "Desactivar";
+                btnEstado.BackColor = Color.Red;
+            } else
+            {
+                btnEstado.Text = "Activar";
+                btnEstado.BackColor = Color.Green;
+            }
+
+        }
+
+        private void dgvPaciente_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void btnXml_Click(object sender, EventArgs e)
+        {
+            new BLLPaciente().ExportarXML();
         }
     }
 }

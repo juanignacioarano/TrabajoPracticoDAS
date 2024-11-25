@@ -13,18 +13,28 @@ namespace BLL
     {
         MPMedico mapper = new MPMedico();
 
-        public List<Especialidad> ListarEspecialidades()
+        public List<Medico> ListarMedicosActivos()
         {
-            return mapper.ListarEspecialidades();
+            return mapper.ListarMedicosActivos();
+        }
+
+        public int ActualizarEstadoMedico(int IdMedico, bool Activo)
+        {
+            return mapper.ActualizarEstadoMedico(IdMedico, Activo);
+        }
+
+        public void ExportarXML()
+        {
+            mapper.ExportarXML();
         }
 
         public List<Especialidad> ListarEspecialidadesPorMedico(int IdMedico)
         {
             return mapper.ListarEspecialidadesPorMedico(IdMedico);
         }
-        public int AgregarMedico(Medico medico)
+        public int AgregarMedico(Medico medico, List<int> especialidades)
         {
-            return mapper.AgregarMedico(medico);
+            return mapper.AgregarMedico(medico, especialidades);
         }
         public int AgregarEspecialidades(int IdMedico, List<int> especialidades)
         {
@@ -34,6 +44,22 @@ namespace BLL
         {
             return mapper.ListarMedicos();
         }
+
+        public int EliminarMedico(int IdMedico)
+        {
+            return mapper.EliminarMedico(IdMedico);
+        }
+
+        public int ModificarMedico(Medico medico)
+        {
+            return mapper.ModificarMedico(medico);
+        }
+
+        public void ActualizarEspecialidades(int IdMedico, List<int> especialidades)
+        {
+            mapper.ActualizarEspecialidades(IdMedico, especialidades);
+        }
+
 
     }
 }

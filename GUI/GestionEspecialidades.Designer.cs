@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.btnLimpiar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
             this.btnModificar = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -42,30 +41,20 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtNombre = new System.Windows.Forms.TextBox();
             this.btnXmlEspecialidades = new System.Windows.Forms.Button();
-            this.btnMenu = new System.Windows.Forms.Button();
+            this.hideButton1 = new GUI.HideButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEspecialidades)).BeginInit();
             this.SuspendLayout();
             // 
             // btnLimpiar
             // 
             this.btnLimpiar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.btnLimpiar.Location = new System.Drawing.Point(106, 212);
+            this.btnLimpiar.Location = new System.Drawing.Point(107, 180);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(157, 26);
             this.btnLimpiar.TabIndex = 118;
             this.btnLimpiar.Text = "Limpiar";
             this.btnLimpiar.UseVisualStyleBackColor = false;
-            // 
-            // btnEliminar
-            // 
-            this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.btnEliminar.Location = new System.Drawing.Point(106, 180);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(157, 26);
-            this.btnEliminar.TabIndex = 117;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.UseVisualStyleBackColor = false;
-            this.btnEliminar.Click += new System.EventHandler(this.button2_Click);
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
             // btnModificar
             // 
@@ -76,6 +65,7 @@
             this.btnModificar.TabIndex = 116;
             this.btnModificar.Text = "Modificar";
             this.btnModificar.UseVisualStyleBackColor = false;
+            this.btnModificar.Click += new System.EventHandler(this.btnModificar_Click);
             // 
             // label10
             // 
@@ -112,7 +102,6 @@
             this.label7.Size = new System.Drawing.Size(48, 13);
             this.label7.TabIndex = 110;
             this.label7.Text = "ID Selec";
-            this.label7.Visible = false;
             // 
             // txtId
             // 
@@ -121,15 +110,18 @@
             this.txtId.Name = "txtId";
             this.txtId.Size = new System.Drawing.Size(157, 20);
             this.txtId.TabIndex = 109;
-            this.txtId.Visible = false;
             // 
             // dgvEspecialidades
             // 
+            this.dgvEspecialidades.AllowUserToAddRows = false;
+            this.dgvEspecialidades.AllowUserToDeleteRows = false;
             this.dgvEspecialidades.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEspecialidades.Location = new System.Drawing.Point(310, 71);
             this.dgvEspecialidades.Name = "dgvEspecialidades";
+            this.dgvEspecialidades.ReadOnly = true;
             this.dgvEspecialidades.Size = new System.Drawing.Size(462, 328);
             this.dgvEspecialidades.TabIndex = 108;
+            this.dgvEspecialidades.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEspecialidades_CellClick);
             // 
             // btnAgregarMedico
             // 
@@ -178,25 +170,21 @@
             this.btnXmlEspecialidades.UseVisualStyleBackColor = true;
             this.btnXmlEspecialidades.Click += new System.EventHandler(this.btnXmlEspecialidades_Click);
             // 
-            // btnMenu
+            // hideButton1
             // 
-            this.btnMenu.Location = new System.Drawing.Point(9, 10);
-            this.btnMenu.Name = "btnMenu";
-            this.btnMenu.Size = new System.Drawing.Size(57, 21);
-            this.btnMenu.TabIndex = 120;
-            this.btnMenu.Text = "Menu";
-            this.btnMenu.UseVisualStyleBackColor = true;
-            this.btnMenu.Click += new System.EventHandler(this.btnMenu_Click);
+            this.hideButton1.Location = new System.Drawing.Point(12, 12);
+            this.hideButton1.Name = "hideButton1";
+            this.hideButton1.Size = new System.Drawing.Size(49, 25);
+            this.hideButton1.TabIndex = 121;
             // 
             // GestionEspecialidades
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 411);
-            this.Controls.Add(this.btnMenu);
+            this.Controls.Add(this.hideButton1);
             this.Controls.Add(this.btnXmlEspecialidades);
             this.Controls.Add(this.btnLimpiar);
-            this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnModificar);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label8);
@@ -209,7 +197,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtNombre);
             this.Name = "GestionEspecialidades";
-            this.Text = "GestionEspecialidades";
+            this.Text = "-";
             this.Load += new System.EventHandler(this.GestionEspecialidades_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEspecialidades)).EndInit();
             this.ResumeLayout(false);
@@ -219,7 +207,6 @@
 
         #endregion
         private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.Button btnEliminar;
         private System.Windows.Forms.Button btnModificar;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label8;
@@ -232,6 +219,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNombre;
         private System.Windows.Forms.Button btnXmlEspecialidades;
-        private System.Windows.Forms.Button btnMenu;
+        private HideButton hideButton1;
     }
 }

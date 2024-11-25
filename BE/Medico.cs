@@ -33,8 +33,16 @@ namespace BE
             set { _dni = value; }
         }
 
-        private List<Especialidad> especialidades;
-        public List<Especialidad> Especialidades
+        //private List<Especialidad> especialidades;
+        //public List<Especialidad> Especialidades
+        //{
+        //    get { return especialidades; }
+        //    set { especialidades = value; }
+        //}
+
+        private string especialidades;
+
+        public string Especialidades
         {
             get { return especialidades; }
             set { especialidades = value; }
@@ -45,6 +53,14 @@ namespace BE
         {
             get { return _matricula; }
             set { _matricula = value; }
+        }
+
+        private bool activo;
+
+        public bool Activo
+        {
+            get { return activo; }
+            set { activo = value; }
         }
 
     }

@@ -34,6 +34,8 @@
             this.btnGestionMedico = new System.Windows.Forms.Button();
             this.btnGestionEspecialidad = new System.Windows.Forms.Button();
             this.panelContenedor = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.scSQLSERVER = new System.ServiceProcess.ServiceController();
             this.panelContenedor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,9 +51,9 @@
             // 
             // btnUsuarios
             // 
-            this.btnUsuarios.Location = new System.Drawing.Point(541, 68);
+            this.btnUsuarios.Location = new System.Drawing.Point(556, 68);
             this.btnUsuarios.Name = "btnUsuarios";
-            this.btnUsuarios.Size = new System.Drawing.Size(253, 133);
+            this.btnUsuarios.Size = new System.Drawing.Size(230, 133);
             this.btnUsuarios.TabIndex = 1;
             this.btnUsuarios.Text = "GESTION USUARIOS";
             this.btnUsuarios.UseVisualStyleBackColor = true;
@@ -59,9 +61,9 @@
             // 
             // btnPacientes
             // 
-            this.btnPacientes.Location = new System.Drawing.Point(259, 68);
+            this.btnPacientes.Location = new System.Drawing.Point(287, 68);
             this.btnPacientes.Name = "btnPacientes";
-            this.btnPacientes.Size = new System.Drawing.Size(265, 133);
+            this.btnPacientes.Size = new System.Drawing.Size(230, 133);
             this.btnPacientes.TabIndex = 2;
             this.btnPacientes.Text = "GESTION PACIENTES";
             this.btnPacientes.UseVisualStyleBackColor = true;
@@ -69,9 +71,9 @@
             // 
             // btnGestionMedico
             // 
-            this.btnGestionMedico.Location = new System.Drawing.Point(45, 237);
+            this.btnGestionMedico.Location = new System.Drawing.Point(12, 207);
             this.btnGestionMedico.Name = "btnGestionMedico";
-            this.btnGestionMedico.Size = new System.Drawing.Size(268, 177);
+            this.btnGestionMedico.Size = new System.Drawing.Size(230, 133);
             this.btnGestionMedico.TabIndex = 3;
             this.btnGestionMedico.Text = "GESTION MEDICOS";
             this.btnGestionMedico.UseVisualStyleBackColor = true;
@@ -79,9 +81,9 @@
             // 
             // btnGestionEspecialidad
             // 
-            this.btnGestionEspecialidad.Location = new System.Drawing.Point(454, 237);
+            this.btnGestionEspecialidad.Location = new System.Drawing.Point(556, 207);
             this.btnGestionEspecialidad.Name = "btnGestionEspecialidad";
-            this.btnGestionEspecialidad.Size = new System.Drawing.Size(309, 180);
+            this.btnGestionEspecialidad.Size = new System.Drawing.Size(230, 133);
             this.btnGestionEspecialidad.TabIndex = 4;
             this.btnGestionEspecialidad.Text = "GESTION ESPECIALIDADES";
             this.btnGestionEspecialidad.UseVisualStyleBackColor = true;
@@ -89,6 +91,7 @@
             // 
             // panelContenedor
             // 
+            this.panelContenedor.Controls.Add(this.label1);
             this.panelContenedor.Controls.Add(this.btnGestionEspecialidad);
             this.panelContenedor.Controls.Add(this.btnGestionMedico);
             this.panelContenedor.Controls.Add(this.btnPacientes);
@@ -99,6 +102,16 @@
             this.panelContenedor.Size = new System.Drawing.Size(800, 450);
             this.panelContenedor.TabIndex = 6;
             this.panelContenedor.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContenedor_Paint);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(320, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(173, 29);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Menú Principal";
             // 
             // Menu
             // 
@@ -114,6 +127,7 @@
             this.Text = "Menu";
             this.Load += new System.EventHandler(this.Menu_Load);
             this.panelContenedor.ResumeLayout(false);
+            this.panelContenedor.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -126,5 +140,7 @@
         private System.Windows.Forms.Button btnGestionMedico;
         private System.Windows.Forms.Button btnGestionEspecialidad;
         private System.Windows.Forms.Panel panelContenedor;
+        private System.Windows.Forms.Label label1;
+        private System.ServiceProcess.ServiceController scSQLSERVER;
     }
 }

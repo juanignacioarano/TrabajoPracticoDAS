@@ -14,7 +14,15 @@ namespace DAL
 
         public void ExportarXmlEspecialidades()
         {
-            Acceso.ExportarStoredProcedureAXml("SP_LISTAR_ESPECIALIDADES", "D:\\especialidades.xml", null);
+            Acceso.ExportarStoredProcedureAXml("SP_LISTAR_ESPECIALIDADES", "especialidades", null);
+        }
+
+        public int ActualizarEstadoEspecialidad(int IdEspecialidad, bool Activo)
+        {
+            SqlParameter[] param = new SqlParameter[2];
+            param[0] = new SqlParameter("@IdEspecialidad", IdEspecialidad);
+            param[1] = new SqlParameter("@Activo", Activo);
+            return Acceso.Escribir("SP_ACTUALIZAR_ESTADO_ESPECIALIDAD", param);
         }
 
         public int AgregarEspecialidad(string Descripcion)
@@ -43,15 +51,17 @@ namespace DAL
         {
             List<BE.Especialidad> especialidades = new List<BE.Especialidad>();
             var dt = Acceso.Leer("SP_LISTAR_ESPECIALIDADES", null);
+
             foreach (System.Data.DataRow item in dt.Rows)
             {
-                BE.Especialidad especialidad = new BE.Especialidad();
-                especialidad.IdEspecialidad = int.Parse(item["IdEspecialidad"].ToString());
-                especialidad.Descripcion = item["Descripcion"].ToString();
+                BE.Especialidad especialidad = new BE.Especialidad
+                {
+                    IdEspecialidad = int.Parse(item["IdEspecialidad"].ToString()),
+                    Descripcion = item["Descripcion"].ToString(),
+                };
                 especialidades.Add(especialidad);
             }
             return especialidades;
         }
-
     }
 }

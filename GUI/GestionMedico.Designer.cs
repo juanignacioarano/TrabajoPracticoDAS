@@ -41,9 +41,8 @@
             this.clbEspecialidades = new System.Windows.Forms.CheckedListBox();
             this.txtFiltro = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtDni = new System.Windows.Forms.TextBox();
             this.btnModificar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
+            this.btnEstado = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.txtId = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -52,7 +51,9 @@
             this.txtDniFiltro = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.btnLimpiar = new System.Windows.Forms.Button();
-            this.btnMenu = new System.Windows.Forms.Button();
+            this.btnXml = new System.Windows.Forms.Button();
+            this.txtDni = new GUI.NumericTextBox();
+            this.hideButton1 = new GUI.HideButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMedicos)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,9 +139,12 @@
             // 
             // dgvMedicos
             // 
+            this.dgvMedicos.AllowUserToAddRows = false;
+            this.dgvMedicos.AllowUserToDeleteRows = false;
             this.dgvMedicos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvMedicos.Location = new System.Drawing.Point(286, 68);
             this.dgvMedicos.Name = "dgvMedicos";
+            this.dgvMedicos.ReadOnly = true;
             this.dgvMedicos.Size = new System.Drawing.Size(486, 331);
             this.dgvMedicos.TabIndex = 11;
             this.dgvMedicos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMedicos_CellClick);
@@ -171,13 +175,6 @@
             this.label6.TabIndex = 21;
             this.label6.Text = "DNI";
             // 
-            // txtDni
-            // 
-            this.txtDni.Location = new System.Drawing.Point(87, 146);
-            this.txtDni.Name = "txtDni";
-            this.txtDni.Size = new System.Drawing.Size(157, 20);
-            this.txtDni.TabIndex = 2;
-            // 
             // btnModificar
             // 
             this.btnModificar.BackColor = System.Drawing.SystemColors.MenuHighlight;
@@ -189,15 +186,16 @@
             this.btnModificar.UseVisualStyleBackColor = false;
             this.btnModificar.Click += new System.EventHandler(this.btnModificar_Click);
             // 
-            // btnEliminar
+            // btnEstado
             // 
-            this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.btnEliminar.Location = new System.Drawing.Point(87, 370);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(157, 26);
-            this.btnEliminar.TabIndex = 23;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.UseVisualStyleBackColor = false;
+            this.btnEstado.BackColor = System.Drawing.Color.Gray;
+            this.btnEstado.Location = new System.Drawing.Point(87, 370);
+            this.btnEstado.Name = "btnEstado";
+            this.btnEstado.Size = new System.Drawing.Size(157, 26);
+            this.btnEstado.TabIndex = 23;
+            this.btnEstado.Text = "Activar/Desactivar";
+            this.btnEstado.UseVisualStyleBackColor = false;
+            this.btnEstado.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
             // label7
             // 
@@ -272,22 +270,38 @@
             this.btnLimpiar.TextChanged += new System.EventHandler(this.Limpiar);
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // btnMenu
+            // btnXml
             // 
-            this.btnMenu.Location = new System.Drawing.Point(12, 8);
-            this.btnMenu.Name = "btnMenu";
-            this.btnMenu.Size = new System.Drawing.Size(57, 21);
-            this.btnMenu.TabIndex = 121;
-            this.btnMenu.Text = "Menu";
-            this.btnMenu.UseVisualStyleBackColor = true;
-            this.btnMenu.Click += new System.EventHandler(this.btnMenu_Click);
+            this.btnXml.Location = new System.Drawing.Point(665, 9);
+            this.btnXml.Name = "btnXml";
+            this.btnXml.Size = new System.Drawing.Size(107, 26);
+            this.btnXml.TabIndex = 127;
+            this.btnXml.Text = "Exportar XML";
+            this.btnXml.UseVisualStyleBackColor = true;
+            this.btnXml.Click += new System.EventHandler(this.btnXml_Click);
+            // 
+            // txtDni
+            // 
+            this.txtDni.Location = new System.Drawing.Point(87, 146);
+            this.txtDni.Name = "txtDni";
+            this.txtDni.Size = new System.Drawing.Size(157, 28);
+            this.txtDni.TabIndex = 2;
+            // 
+            // hideButton1
+            // 
+            this.hideButton1.Location = new System.Drawing.Point(12, 12);
+            this.hideButton1.Name = "hideButton1";
+            this.hideButton1.Size = new System.Drawing.Size(58, 20);
+            this.hideButton1.TabIndex = 126;
             // 
             // AltaMedico
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 411);
-            this.Controls.Add(this.btnMenu);
+            this.Controls.Add(this.btnXml);
+            this.Controls.Add(this.txtDni);
+            this.Controls.Add(this.hideButton1);
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -296,10 +310,9 @@
             this.Controls.Add(this.txtNombreFiltro);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtId);
-            this.Controls.Add(this.btnEliminar);
+            this.Controls.Add(this.btnEstado);
             this.Controls.Add(this.btnModificar);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.txtDni);
             this.Controls.Add(this.txtFiltro);
             this.Controls.Add(this.clbEspecialidades);
             this.Controls.Add(this.dgvMedicos);
@@ -336,9 +349,8 @@
         private System.Windows.Forms.CheckedListBox clbEspecialidades;
         private System.Windows.Forms.TextBox txtFiltro;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtDni;
         private System.Windows.Forms.Button btnModificar;
-        private System.Windows.Forms.Button btnEliminar;
+        private System.Windows.Forms.Button btnEstado;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtId;
         private System.Windows.Forms.Label label8;
@@ -347,7 +359,9 @@
         private System.Windows.Forms.TextBox txtDniFiltro;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.Button btnMenu;
+        private HideButton hideButton1;
+        private NumericTextBox txtDni;
+        private System.Windows.Forms.Button btnXml;
     }
 }
 

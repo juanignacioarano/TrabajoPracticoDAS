@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace DAL
 {
@@ -81,11 +82,100 @@ namespace DAL
         }
 
 
-        public void ExportarStoredProcedureAXml(string storedProcedureName, string filePath, SqlParameter[] parametros = null)
+        public int EscribirLista(List<(string procedimiento, SqlParameter[] parametros)> operaciones)
         {
-            Leer(storedProcedureName, parametros).WriteXml(filePath);
-            MessageBox.Show("Exportado con exito en la ruta: " + filePath);
+            int totalRegistrosAfectados = 0;
+
+            using (connection)
+            {
+                SqlTransaction transaction = null;
+
+                try
+                {
+                    connection.Open();
+                    transaction = connection.BeginTransaction();
+
+                    foreach (var operacion in operaciones)
+                    {
+                        SqlCommand cmd = new SqlCommand
+                        {
+                            CommandType = CommandType.StoredProcedure,
+                            CommandText = operacion.procedimiento,
+                            Connection = connection,
+                            Transaction = transaction
+                        };
+
+                        if (operacion.parametros != null)
+                        {
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddRange(operacion.parametros);
+                        }
+
+                        totalRegistrosAfectados += cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction?.Rollback();
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return totalRegistrosAfectados;
         }
+
+
+        public void ExportarStoredProcedureAXml(string storedProcedureName, string fileName, SqlParameter[] parametros = null)
+        {
+            try
+            {
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                string filePath = System.IO.Path.Combine(desktopPath, fileName + ".xml");
+
+                Leer(storedProcedureName, parametros).WriteXml(filePath);
+
+                MessageBox.Show("Exportado con éxito en la ruta: " + filePath, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Mostrar el archivo en el explorador y asegurar que se haga scroll hasta él
+                ShowFileInExplorer(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlFolder, uint cidl, [In] IntPtr[] apidl, uint dwFlags);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHParseDisplayName(string pszName, IntPtr pbc, out IntPtr ppidl, uint sfgaoIn, out uint psfgaoOut);
+
+        private void ShowFileInExplorer(string filePath)
+        {
+            IntPtr pidl;
+            uint psfgaoOut;
+
+            int hr = SHParseDisplayName(filePath, IntPtr.Zero, out pidl, 0, out psfgaoOut);
+            if (hr == 0) // S_OK
+            {
+                SHOpenFolderAndSelectItems(pidl, 0, null, 0);
+                Marshal.FreeCoTaskMem(pidl);
+            }
+            else
+            {
+                MessageBox.Show("No se pudo mostrar el archivo en el explorador.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
 
     }
 }

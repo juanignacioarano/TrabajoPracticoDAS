@@ -13,21 +13,35 @@ namespace DAL
     {
         Acceso acceso = new Acceso();
 
-        public List<Especialidad> ListarEspecialidades()
+        public List<Medico> ListarMedicosActivos()
         {
-            List<Especialidad> especialidades = new List<Especialidad>();
-            DataTable dt = new DataTable();
-            dt = acceso.Leer("SP_LISTAR_ESPECIALIDADES", null);
+            List<Medico> medicos = new List<Medico>();
+            DataTable dt = acceso.Leer("SP_LISTAR_MEDICOS_ACTIVOS", null);
             foreach (DataRow item in dt.Rows)
             {
-                Especialidad especialidad = new Especialidad();
-                especialidad.IdEspecialidad = int.Parse(item["IdEspecialidad"].ToString());
-                especialidad.Descripcion = item["Descripcion"].ToString();
-                especialidades.Add(especialidad);
+                Medico medico = new Medico
+                {
+                    IdMedico = int.Parse(item["IdMedico"].ToString()),
+                    Nombre = item["Nombre"].ToString(),
+                    Apellido = item["Apellido"].ToString(),
+                    Matricula = item["Matricula"].ToString(),
+                    Dni = item["Dni"].ToString(),
+                    Especialidades = item["Especialidades"].ToString(),
+                    Activo = Convert.ToBoolean(item["Activo"])
+                };
+                medicos.Add(medico);
             }
-            return especialidades;
+            return medicos;
         }
-
+        public int ActualizarEstadoMedico(int IdMedico, bool Activo)
+        {
+            SqlParameter[] parametros = new SqlParameter[2]
+            {
+            new SqlParameter("@IdMedico", IdMedico),
+            new SqlParameter("@Activo", Activo)
+            };
+            return acceso.Escribir("SP_ACTUALIZAR_ESTADO_MEDICO", parametros);
+        }
         public List<Especialidad> ListarEspecialidadesPorMedico(int IdMedico)
         {
             List<Especialidad> especialidades = new List<Especialidad>();
@@ -42,7 +56,6 @@ namespace DAL
             {
                 Especialidad especialidad = new Especialidad();
                 especialidad.IdEspecialidad = int.Parse(item["IdEspecialidad"].ToString());
-                //especialidad.Descripcion = item["Descripcion"].ToString();
                 especialidades.Add(especialidad);
             }
             return especialidades;
@@ -50,22 +63,41 @@ namespace DAL
         }
 
 
-        public int AgregarMedico(Medico medico)
+        public int AgregarMedico(Medico medico, List<int> especialidades)
         {
-            SqlParameter[] param = new SqlParameter[5];
-            param[0] = new SqlParameter("@Nombre", medico.Nombre);
-            param[1] = new SqlParameter("@Apellido", medico.Apellido);
-            param[2] = new SqlParameter("@Matricula", medico.Matricula);
-            param[3] = new SqlParameter("@Dni", medico.Dni);
+            int idMedico;
+
+            SqlParameter[] paramMedico = new SqlParameter[5];
+            paramMedico[0] = new SqlParameter("@Nombre", medico.Nombre);
+            paramMedico[1] = new SqlParameter("@Apellido", medico.Apellido);
+            paramMedico[2] = new SqlParameter("@Matricula", medico.Matricula);
+            paramMedico[3] = new SqlParameter("@Dni", medico.Dni);
 
             SqlParameter outputId = new SqlParameter("@IdMedico", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
-            param[4] = outputId;
-            acceso.Escribir("SP_INSERTAR_MEDICO", param);
-            return (int)outputId.Value;
+            paramMedico[4] = outputId;
+
+            acceso.Escribir("SP_INSERTAR_MEDICO", paramMedico);
+
+            idMedico = (int)outputId.Value;
+            List<(string procedimiento, SqlParameter[] parametros)> operaciones = new List<(string, SqlParameter[])>();
+
+            foreach (int idEspecialidad in especialidades)
+            {
+                SqlParameter[] paramEspecialidad = new SqlParameter[2];
+                paramEspecialidad[0] = new SqlParameter("@IdMedico", idMedico);
+                paramEspecialidad[1] = new SqlParameter("@IdEspecialidad", idEspecialidad);
+
+                operaciones.Add(("SP_INSERTAR_MEDICO_ESPECIALIDAD", paramEspecialidad));
+            }
+
+            acceso.EscribirLista(operaciones);
+
+            return idMedico;
         }
+
 
         public int AgregarEspecialidades(int IdMedico, List<int> especialidades)
         {
@@ -81,22 +113,71 @@ namespace DAL
             return i;
         }
 
+        public void ActualizarEspecialidades(int idMedico, List<int> especialidades)
+        {
+            SqlParameter[] parametrosEliminar = new SqlParameter[1]
+            {
+        new SqlParameter("@IdMedico", idMedico)
+            };
+
+            acceso.Escribir("SP_ELIMINAR_ESPECIALIDADES_POR_MEDICO", parametrosEliminar);
+
+            foreach (int idEspecialidad in especialidades)
+            {
+                SqlParameter[] parametrosAgregar = new SqlParameter[2]
+                {
+            new SqlParameter("@IdMedico", idMedico),
+            new SqlParameter("@IdEspecialidad", idEspecialidad)
+                };
+
+                acceso.Escribir("SP_INSERTAR_MEDICO_ESPECIALIDAD", parametrosAgregar);
+            }
+        }
+
+
         public List<Medico> ListarMedicos()
         {
             List<Medico> medicos = new List<Medico>();
-            DataTable dt = new DataTable();
-            dt = acceso.Leer("SP_LISTAR_MEDICOS", null);
+            DataTable dt = acceso.Leer("SP_LISTAR_MEDICOS", null);
+
             foreach (DataRow item in dt.Rows)
             {
-                Medico medico = new Medico();
-                medico.IdMedico = int.Parse(item["IdMedico"].ToString());
-                medico.Nombre = item["Nombre"].ToString();
-                medico.Apellido = item["Apellido"].ToString();
-                medico.Matricula = item["Matricula"].ToString();
-                medico.Dni = item["Dni"].ToString();
+                Medico medico = new Medico
+                {
+                    IdMedico = int.Parse(item["IdMedico"].ToString()),
+                    Nombre = item["Nombre"].ToString(),
+                    Apellido = item["Apellido"].ToString(),
+                    Matricula = item["Matricula"].ToString(),
+                    Especialidades = item["Especialidades"].ToString(),
+                    Dni = item["Dni"].ToString(),
+                    Activo = Convert.ToBoolean(item["Activo"])
+                };
                 medicos.Add(medico);
             }
             return medicos;
+        }
+
+        public void ExportarXML()
+        {
+            acceso.ExportarStoredProcedureAXml("SP_LISTAR_MEDICOS", "Medicos", null);
+        }
+
+        public int ModificarMedico(Medico medico)
+        {
+            SqlParameter[] param = new SqlParameter[5];
+            param[0] = new SqlParameter("@IdMedico", medico.IdMedico);
+            param[1] = new SqlParameter("@Nombre", medico.Nombre);
+            param[2] = new SqlParameter("@Apellido", medico.Apellido);
+            param[3] = new SqlParameter("@Matricula", medico.Matricula);
+            param[4] = new SqlParameter("@Dni", medico.Dni);
+            return acceso.Escribir("SP_ACTUALIZAR_MEDICO", param);
+        }
+
+        public int EliminarMedico(int IdMedico)
+        {
+            SqlParameter[] param = new SqlParameter[1];
+            param[0] = new SqlParameter("@IdMedico", IdMedico);
+            return acceso.Escribir("SP_ELIMINAR_MEDICO", param);
         }
     }
 }

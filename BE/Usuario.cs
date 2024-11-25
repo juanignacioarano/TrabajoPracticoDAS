@@ -23,11 +23,5 @@
             set { _contraseña = value; }
         }
 
-        private string _rol;
-        public string Rol
-        {
-            get { return _rol; }
-            set { _rol = value; }
-        }
     }
 }

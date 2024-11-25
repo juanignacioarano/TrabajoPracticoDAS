@@ -22,6 +22,15 @@ namespace BE
 			get { return _descripcion; }
 			set { _descripcion = value; }
 		}
+
+		//private bool activo;
+
+		//public bool Activo
+		//{
+		//	get { return activo; }
+		//	set { activo = value; }
+		//}
+
 	}
 
 }

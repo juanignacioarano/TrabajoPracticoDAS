@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -39,6 +40,46 @@ namespace GUI
             currentChildForm.Show();
         }
 
+
+        private void VerificarEstadoSQLServer()
+        {
+            try
+            {
+                scSQLSERVER.ServiceName = "MSSQLSERVER"; 
+                scSQLSERVER.MachineName = "."; 
+
+                if (scSQLSERVER.Status != ServiceControllerStatus.Running)
+                {
+                    MessageBox.Show(
+                        "El servicio SQL Server está detenido. Por favor, inícialo antes de continuar.",
+                        "SQL Server Detenido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    //Close();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "El servicio SQL Server está en ejecución.",
+                        "SQL Server en ejecución",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Ocurrió un error al verificar el estado del servicio SQL Server: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                //Close();
+            }
+        }
+
         private void btnPacientes_Click(object sender, EventArgs e)
         {
             AbrirFormularioHijo(new GestionPacientes());
@@ -52,6 +93,7 @@ namespace GUI
         private void Menu_Load(object sender, EventArgs e)
         {
             AbrirFormularioHijo(new Login());
+            VerificarEstadoSQLServer();
         }
 
         private void panelContenedor_Paint(object sender, PaintEventArgs e)

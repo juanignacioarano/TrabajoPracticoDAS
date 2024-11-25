@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BE;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -21,6 +22,58 @@ namespace DAL
             };
 
             return acceso.Escribir("SP_INSERTAR_USUARIO", parametros);
+        }
+
+        public int EliminarUsuario(int id)
+        {
+            SqlParameter[] parametros = new SqlParameter[1]
+            {
+                new SqlParameter("@IdUsuario", id)
+            };
+
+            return acceso.Escribir("SP_ELIMINAR_USUARIO", parametros);
+        }
+
+        public int ModificarUsuario(Usuario usuario)
+        {
+            List<SqlParameter> parametros = new List<SqlParameter>
+    {
+        new SqlParameter("@Id", usuario.IdUsuario),
+        new SqlParameter("@Username", usuario.NombreUsuario)
+    };
+
+            if (!string.IsNullOrWhiteSpace(usuario.Contraseña))
+            {
+                parametros.Add(new SqlParameter("@Password", usuario.Contraseña));
+            }
+            else
+            {
+                parametros.Add(new SqlParameter("@Password", DBNull.Value));
+            }
+
+            return acceso.Escribir("SP_ACTUALIZAR_USUARIO", parametros.ToArray());
+        }
+
+
+        public List<Usuario> ListarUsuarios()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+            DataTable dt = new DataTable();
+            dt = acceso.Leer("SP_LISTAR_USUARIOS", null);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Usuario usuario = new Usuario();
+                usuario.IdUsuario = Convert.ToInt32(item["IdUsuario"]);
+                usuario.NombreUsuario = item["NombreUsuario"].ToString();
+                usuarios.Add(usuario);
+            }
+            return usuarios;
+        }
+
+        public void ExportarXML()
+        {
+            acceso.ExportarStoredProcedureAXml("SP_LISTAR_USUARIOS", "Usuarios", null);
         }
 
         public bool LoginUsuario(string username, string password)

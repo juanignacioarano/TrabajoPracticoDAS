@@ -24,7 +24,7 @@ namespace GUI
         List<Especialidad> listaEspecialidadesOriginal = new List<Especialidad>();
         private void Form1_Load(object sender, EventArgs e)
         {
-            listaEspecialidadesOriginal = new BLLMedico().ListarEspecialidades();
+            listaEspecialidadesOriginal = new BLLEspecialidad().ListarEspecialidades();
             clbEspecialidades.DataSource = listaEspecialidadesOriginal;
             clbEspecialidades.DisplayMember = "Descripcion";
             clbEspecialidades.ValueMember = "IdEspecialidad";
@@ -90,6 +90,15 @@ namespace GUI
 
         private void btnAgregarMedico_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                string.IsNullOrWhiteSpace(txtMatricula.Text) ||
+                string.IsNullOrWhiteSpace(txtDni.Text))
+            {
+                MessageBox.Show("Todos los campos son obligatorios.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Medico medico = new Medico
             {
                 Nombre = txtNombre.Text,
@@ -98,27 +107,48 @@ namespace GUI
                 Dni = txtDni.Text
             };
 
-            List<int> especialidades = new List<int>();
-            foreach (Especialidad item in clbEspecialidades.CheckedItems)
+            List<int> especialidades = listaEspecialidadesOriginal
+                .Where(especialidad => especialidadesSeleccionadas.Contains(especialidad.IdEspecialidad))
+                .Select(especialidad => especialidad.IdEspecialidad)
+                .ToList();
+
+            if (especialidades.Count == 0)
             {
-                especialidades.Add(item.IdEspecialidad);
+                MessageBox.Show("Debe seleccionar al menos una especialidad.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            int idMedico = new BLLMedico().AgregarMedico(medico);
 
-            new BLLMedico().AgregarEspecialidades(idMedico, especialidades);
+            int idMedico = new BLLMedico().AgregarMedico(medico, especialidades);
+
             ActualizarGrilla();
+            btnLimpiar_Click(sender, e);
         }
+
+        bool estado = true;
 
         private void dgvMedicos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex == -1) return;
+            txtFiltro.Text = "";
             int idMedico = (int)dgvMedicos.Rows[e.RowIndex].Cells["IdMedico"].Value;
             txtId.Text = idMedico.ToString();
             txtNombre.Text = dgvMedicos.Rows[e.RowIndex].Cells["Nombre"].Value.ToString();
             txtApellido.Text = dgvMedicos.Rows[e.RowIndex].Cells["Apellido"].Value.ToString();
             txtMatricula.Text = dgvMedicos.Rows[e.RowIndex].Cells["Matricula"].Value.ToString();
             txtDni.Text = dgvMedicos.Rows[e.RowIndex].Cells["Dni"].Value.ToString();
+            estado = Convert.ToBoolean(dgvMedicos.Rows[e.RowIndex].Cells["Activo"].Value);
+
+            if (estado)
+            {
+                btnEstado.Text = "Desactivar";
+                btnEstado.BackColor = Color.Red;
+            }
+            else
+            {
+                btnEstado.Text = "Activar";
+                btnEstado.BackColor = Color.Green;
+            }
             clbEspecialidades.ClearSelected();
             for (int i = 0; i < clbEspecialidades.Items.Count; i++)
             {
@@ -165,8 +195,8 @@ namespace GUI
                 medicos = medicos.Where(medico => medico.Dni.ToLower().Contains(txtDniFiltro.Text.ToLower())).ToList();
             }
 
-            dgvMedicos.DataSource = null; 
-            dgvMedicos.DataSource = medicos;  
+            dgvMedicos.DataSource = null;
+            dgvMedicos.DataSource = medicos;
         }
 
         private void Limpiar(object sender, EventArgs e)
@@ -181,29 +211,110 @@ namespace GUI
             txtNombre.Text = "";
             txtApellido.Text = "";
             txtId.Text = "";
+            btnEstado.Text = "Activar/Desactivar";
+            btnEstado.BackColor = Color.Gray;
             clbEspecialidades.ClearSelected();
             for (int i = 0; i < clbEspecialidades.Items.Count; i++)
             {
                 clbEspecialidades.SetItemChecked(i, false);
             }
         }
-
-        private void btnMenu_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-        }
-
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            BLLMedico bLLMedico = new BLLMedico();
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Debe seleccionar un médico para modificar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                string.IsNullOrWhiteSpace(txtMatricula.Text) ||
+                string.IsNullOrWhiteSpace(txtDni.Text))
+            {
+                MessageBox.Show("Todos los campos son obligatorios.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Medico medico = new Medico
             {
-                IdMedico = Convert.ToInt32(txtId.Text),
+                IdMedico = int.Parse(txtId.Text),
                 Nombre = txtNombre.Text,
                 Apellido = txtApellido.Text,
                 Matricula = txtMatricula.Text,
                 Dni = txtDni.Text
             };
+
+            List<int> especialidades = listaEspecialidadesOriginal
+                .Where(especialidad => especialidadesSeleccionadas.Contains(especialidad.IdEspecialidad))
+                .Select(especialidad => especialidad.IdEspecialidad)
+                .ToList();
+
+            if (especialidades.Count == 0)
+            {
+                MessageBox.Show("Debe seleccionar al menos una especialidad.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                BLLMedico bllMedico = new BLLMedico();
+                bllMedico.ModificarMedico(medico);
+                
+                bllMedico.ActualizarEspecialidades(medico.IdMedico, especialidades);
+
+                ActualizarGrilla();
+
+                MessageBox.Show("Médico modificado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                btnLimpiar_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al modificar el médico: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Debe seleccionar un medico", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (estado)
+            {
+                DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea desactivar el medico?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    new BLLMedico().ActualizarEstadoMedico(Convert.ToInt32(txtId.Text), false);
+                }
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea activar el medico?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    new BLLMedico().ActualizarEstadoMedico(Convert.ToInt32(txtId.Text), true);
+                }
+            }
+
+            ActualizarGrilla();
+            btnLimpiar_Click(sender, e);
+
+        }
+
+        private void btnXmlEspecialidades_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnXml_Click(object sender, EventArgs e)
+        {
+            BLLMedico bllMedico = new BLLMedico();
+            bllMedico.ExportarXML();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace GUI
         BLLEspecialidad bLLEspecialidad = new BLLEspecialidad();
         List<Especialidad> listaEspecialidadesOriginal = new List<Especialidad>();
 
-        public void FiltrarEspecialidades(string filtro) 
+        public void FiltrarEspecialidades(string filtro)
         {
             var especialidadesFiltradas = listaEspecialidadesOriginal
         .Where(especialidad => especialidad.Descripcion.ToLower().Contains(filtro.ToLower()))
@@ -61,17 +61,122 @@ namespace GUI
             bLLEspecialidad.ExportarXmlEspecialidades();
         }
 
-        private void btnMenu_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
-            int idEspecialidad = 0;
-            idEspecialidad = Convert.ToInt32(txtId.Text);
-            bLLEspecialidad.EliminarEspecialidad(idEspecialidad);
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Por favor, seleccione una especialidad para eliminar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
+            DialogResult result = MessageBox.Show(
+                "¿Está seguro de que desea eliminar esta especialidad?",
+                "Confirmación de eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                int idEspecialidad = Convert.ToInt32(txtId.Text);
+
+                bLLEspecialidad.EliminarEspecialidad(idEspecialidad);
+
+                listaEspecialidadesOriginal = bLLEspecialidad.ListarEspecialidades();
+                dgvEspecialidades.DataSource = listaEspecialidadesOriginal;
+                txtId.Text = "";
+                txtNombre.Text = "";
+            }
+        }
+
+        bool estado = true;
+        private void dgvEspecialidades_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex == -1) return;
+            txtNombre.Text = dgvEspecialidades.Rows[e.RowIndex].Cells[1].Value.ToString();
+            txtId.Text = dgvEspecialidades.Rows[e.RowIndex].Cells[0].Value.ToString();
+
+            //estado = Convert.ToBoolean(dgvEspecialidades.Rows[e.RowIndex].Cells["Activo"].Value);
+
+            //if (estado)
+            //{
+            //    btnEstado.Text = "Desactivar";
+            //    btnEstado.BackColor = Color.Red;
+            //}
+            //else
+            //{
+            //    btnEstado.Text = "Activar";
+            //    btnEstado.BackColor = Color.Green;
+            //}
+
+        }
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtId.Text = "";
+            txtNombre.Text = "";
+            //btnEstado.Text = "Activar/Desactivar";
+            //btnEstado.BackColor = Color.Gray;
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Debe seleccionar una especialidad.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("El campo Descripción no puede estar vacío.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            int idEspecialidad = Convert.ToInt32(txtId.Text);
+
+            Especialidad especialidad = new Especialidad
+            {
+                IdEspecialidad = idEspecialidad,
+                Descripcion = txtNombre.Text
+            };
+
+            bLLEspecialidad.ModificarEspecialidad(especialidad);
+            dgvEspecialidades.DataSource = null;
+            dgvEspecialidades.DataSource = bLLEspecialidad.ListarEspecialidades();
+
+            txtNombre.Text = "";
+            txtId.Text = "";
+        }
+
+        private void btnEstado_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Debe seleccionar una especialidad", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (estado)
+            {
+                DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea desactivar la especialidad?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    new BLLEspecialidad().ActualizarEstadoEspecialidad(Convert.ToInt32(txtId.Text), false);
+                }
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea activar la especialidad?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    new BLLEspecialidad().ActualizarEstadoEspecialidad(Convert.ToInt32(txtId.Text), true);
+                }
+            }
+
+            btnLimpiar_Click(sender, e);
+            dgvEspecialidades.DataSource = null;
+            dgvEspecialidades.DataSource = bLLEspecialidad.ListarEspecialidades();
         }
     }
 }

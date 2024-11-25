@@ -46,9 +46,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txtDireccion = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.txtTelefono = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.dtpFechaDeNacimiento = new System.Windows.Forms.DateTimePicker();
             this.label4 = new System.Windows.Forms.Label();
@@ -56,10 +54,13 @@
             this.label14 = new System.Windows.Forms.Label();
             this.txtNumeroDeAfiliado = new System.Windows.Forms.TextBox();
             this.btnLimpiar = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnEstado = new System.Windows.Forms.Button();
             this.btnModificar = new System.Windows.Forms.Button();
-            this.txtDni = new System.Windows.Forms.TextBox();
-            this.btnMenu = new System.Windows.Forms.Button();
+            this.hideButton1 = new GUI.HideButton();
+            this.txtEmail = new GUI.EmailTextBox();
+            this.txtDni = new GUI.NumericTextBox();
+            this.txtTelefono = new GUI.NumericTextBox();
+            this.btnXml = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPaciente)).BeginInit();
             this.SuspendLayout();
             // 
@@ -115,7 +116,6 @@
             this.label7.Size = new System.Drawing.Size(48, 13);
             this.label7.TabIndex = 49;
             this.label7.Text = "ID Selec";
-            this.label7.Visible = false;
             // 
             // txtId
             // 
@@ -124,7 +124,6 @@
             this.txtId.Name = "txtId";
             this.txtId.Size = new System.Drawing.Size(157, 20);
             this.txtId.TabIndex = 48;
-            this.txtId.Visible = false;
             // 
             // label6
             // 
@@ -137,11 +136,16 @@
             // 
             // dgvPaciente
             // 
+            this.dgvPaciente.AllowUserToAddRows = false;
+            this.dgvPaciente.AllowUserToDeleteRows = false;
             this.dgvPaciente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPaciente.Location = new System.Drawing.Point(286, 68);
             this.dgvPaciente.Name = "dgvPaciente";
+            this.dgvPaciente.ReadOnly = true;
             this.dgvPaciente.Size = new System.Drawing.Size(502, 370);
             this.dgvPaciente.TabIndex = 43;
+            this.dgvPaciente.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPaciente_CellClick);
+            this.dgvPaciente.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPaciente_CellContentClick);
             // 
             // btnAgregarMedico
             // 
@@ -149,7 +153,7 @@
             this.btnAgregarMedico.Location = new System.Drawing.Point(76, 324);
             this.btnAgregarMedico.Name = "btnAgregarMedico";
             this.btnAgregarMedico.Size = new System.Drawing.Size(157, 26);
-            this.btnAgregarMedico.TabIndex = 7;
+            this.btnAgregarMedico.TabIndex = 10;
             this.btnAgregarMedico.Text = "Agregar";
             this.btnAgregarMedico.UseVisualStyleBackColor = false;
             this.btnAgregarMedico.Click += new System.EventHandler(this.btnAgregarMedico_Click);
@@ -221,13 +225,6 @@
             this.label11.TabIndex = 58;
             this.label11.Text = "Telefono";
             // 
-            // txtTelefono
-            // 
-            this.txtTelefono.Location = new System.Drawing.Point(76, 189);
-            this.txtTelefono.Name = "txtTelefono";
-            this.txtTelefono.Size = new System.Drawing.Size(157, 20);
-            this.txtTelefono.TabIndex = 5;
-            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -236,13 +233,6 @@
             this.label12.Size = new System.Drawing.Size(32, 13);
             this.label12.TabIndex = 60;
             this.label12.Text = "Email";
-            // 
-            // txtEmail
-            // 
-            this.txtEmail.Location = new System.Drawing.Point(76, 215);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(157, 20);
-            this.txtEmail.TabIndex = 6;
             // 
             // label13
             // 
@@ -258,7 +248,7 @@
             this.dtpFechaDeNacimiento.Location = new System.Drawing.Point(76, 267);
             this.dtpFechaDeNacimiento.Name = "dtpFechaDeNacimiento";
             this.dtpFechaDeNacimiento.Size = new System.Drawing.Size(156, 20);
-            this.dtpFechaDeNacimiento.TabIndex = 63;
+            this.dtpFechaDeNacimiento.TabIndex = 8;
             // 
             // label4
             // 
@@ -273,13 +263,14 @@
             // 
             this.cmbGenero.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbGenero.FormattingEnabled = true;
+            this.cmbGenero.ItemHeight = 13;
             this.cmbGenero.Items.AddRange(new object[] {
             "Masculino",
             "Femenino"});
             this.cmbGenero.Location = new System.Drawing.Point(76, 297);
             this.cmbGenero.Name = "cmbGenero";
             this.cmbGenero.Size = new System.Drawing.Size(157, 21);
-            this.cmbGenero.TabIndex = 65;
+            this.cmbGenero.TabIndex = 9;
             // 
             // label14
             // 
@@ -295,7 +286,7 @@
             this.txtNumeroDeAfiliado.Location = new System.Drawing.Point(76, 241);
             this.txtNumeroDeAfiliado.Name = "txtNumeroDeAfiliado";
             this.txtNumeroDeAfiliado.Size = new System.Drawing.Size(157, 20);
-            this.txtNumeroDeAfiliado.TabIndex = 66;
+            this.txtNumeroDeAfiliado.TabIndex = 7;
             // 
             // btnLimpiar
             // 
@@ -306,16 +297,18 @@
             this.btnLimpiar.TabIndex = 70;
             this.btnLimpiar.Text = "Limpiar";
             this.btnLimpiar.UseVisualStyleBackColor = false;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // button2
+            // btnEstado
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button2.Location = new System.Drawing.Point(75, 384);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(157, 26);
-            this.button2.TabIndex = 69;
-            this.button2.Text = "Eliminar";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnEstado.BackColor = System.Drawing.Color.Silver;
+            this.btnEstado.Location = new System.Drawing.Point(75, 384);
+            this.btnEstado.Name = "btnEstado";
+            this.btnEstado.Size = new System.Drawing.Size(157, 26);
+            this.btnEstado.TabIndex = 69;
+            this.btnEstado.Text = "Activar/Desactivar";
+            this.btnEstado.UseVisualStyleBackColor = false;
+            this.btnEstado.Click += new System.EventHandler(this.button2_Click);
             // 
             // btnModificar
             // 
@@ -326,33 +319,58 @@
             this.btnModificar.TabIndex = 68;
             this.btnModificar.Text = "Modificar";
             this.btnModificar.UseVisualStyleBackColor = false;
+            this.btnModificar.Click += new System.EventHandler(this.btnModificar_Click);
+            // 
+            // hideButton1
+            // 
+            this.hideButton1.Location = new System.Drawing.Point(8, 9);
+            this.hideButton1.Name = "hideButton1";
+            this.hideButton1.Size = new System.Drawing.Size(58, 20);
+            this.hideButton1.TabIndex = 126;
+            // 
+            // txtEmail
+            // 
+            this.txtEmail.Location = new System.Drawing.Point(76, 214);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(159, 24);
+            this.txtEmail.TabIndex = 6;
             // 
             // txtDni
             // 
-            this.txtDni.Location = new System.Drawing.Point(76, 137);
+            this.txtDni.Location = new System.Drawing.Point(76, 140);
             this.txtDni.Name = "txtDni";
-            this.txtDni.Size = new System.Drawing.Size(157, 20);
+            this.txtDni.Size = new System.Drawing.Size(159, 28);
             this.txtDni.TabIndex = 3;
             // 
-            // btnMenu
+            // txtTelefono
             // 
-            this.btnMenu.Location = new System.Drawing.Point(13, 12);
-            this.btnMenu.Name = "btnMenu";
-            this.btnMenu.Size = new System.Drawing.Size(57, 21);
-            this.btnMenu.TabIndex = 122;
-            this.btnMenu.Text = "Menu";
-            this.btnMenu.UseVisualStyleBackColor = true;
-            this.btnMenu.Click += new System.EventHandler(this.btnMenu_Click);
+            this.txtTelefono.Location = new System.Drawing.Point(76, 189);
+            this.txtTelefono.Name = "txtTelefono";
+            this.txtTelefono.Size = new System.Drawing.Size(159, 28);
+            this.txtTelefono.TabIndex = 5;
+            // 
+            // btnXml
+            // 
+            this.btnXml.Location = new System.Drawing.Point(681, 7);
+            this.btnXml.Name = "btnXml";
+            this.btnXml.Size = new System.Drawing.Size(107, 26);
+            this.btnXml.TabIndex = 128;
+            this.btnXml.Text = "Exportar XML";
+            this.btnXml.UseVisualStyleBackColor = true;
+            this.btnXml.Click += new System.EventHandler(this.btnXml_Click);
             // 
             // GestionPacientes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnMenu);
+            this.Controls.Add(this.btnXml);
+            this.Controls.Add(this.hideButton1);
+            this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.txtDni);
+            this.Controls.Add(this.txtTelefono);
             this.Controls.Add(this.btnLimpiar);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnEstado);
             this.Controls.Add(this.btnModificar);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.txtNumeroDeAfiliado);
@@ -361,9 +379,7 @@
             this.Controls.Add(this.dtpFechaDeNacimiento);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.txtTelefono);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtDireccion);
             this.Controls.Add(this.label10);
@@ -410,9 +426,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtDireccion;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox txtTelefono;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.DateTimePicker dtpFechaDeNacimiento;
         private System.Windows.Forms.Label label4;
@@ -420,10 +434,13 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox txtNumeroDeAfiliado;
         private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnEstado;
         private System.Windows.Forms.Button btnModificar;
-        private System.Windows.Forms.TextBox txtDni;
-        private System.Windows.Forms.Button btnMenu;
+        private NumericTextBox txtTelefono;
+        private NumericTextBox txtDni;
+        private EmailTextBox txtEmail;
+        private HideButton hideButton1;
+        private System.Windows.Forms.Button btnXml;
         //private TextboxNumerico txtDni;
     }
 }

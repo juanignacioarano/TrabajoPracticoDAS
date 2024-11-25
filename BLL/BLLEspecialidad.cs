@@ -18,6 +18,10 @@ namespace BLL
             return mapper.AgregarEspecialidad(Descripcion);
         }
 
+        public int ActualizarEstadoEspecialidad(int IdEspecialidad, bool Activo)
+        {
+            return mapper.ActualizarEstadoEspecialidad(IdEspecialidad, Activo);
+        }
         public int ModificarEspecialidad(BE.Especialidad especialidad)
         {
             return mapper.ModificarEspecialidad(especialidad);

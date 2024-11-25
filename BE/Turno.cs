@@ -11,13 +11,6 @@ namespace BE
             set { _idTurno = value; }
         }
 
-        private int _idPaciente;
-        public int IdPaciente
-        {
-            get { return _idPaciente; }
-            set { _idPaciente = value; }
-        }
-
         private int _idMedico;
         public int IdMedico
         {
@@ -25,26 +18,74 @@ namespace BE
             set { _idMedico = value; }
         }
 
-        private DateTime _fechaTurno;
-        public DateTime FechaTurno
+        private string _medico;
+
+        public string Medico
         {
-            get { return _fechaTurno; }
-            set { _fechaTurno = value; }
+            get { return _medico; }
+            set { _medico = value; }
         }
 
-        private DateTime _fechaLlegada;
+        private int dniMedico;
 
-        public DateTime FechaLlegada
+        public int DniMedico
         {
-            get { return _fechaLlegada; }
-            set { _fechaLlegada = value; }
+            get { return dniMedico; }
+            set { dniMedico = value; }
         }
 
-        private string _motivoConsulta;
-        public string MotivoConsulta
+
+        private string paciente;
+
+        public string Paciente
         {
-            get { return _motivoConsulta; }
-            set { _motivoConsulta = value; }
+            get { return paciente; }
+            set { paciente = value; }
+        }
+
+        private int dniPaciente;
+
+        public int DniPaciente
+        {
+            get { return dniPaciente; }
+            set { dniPaciente = value; }
+        }
+
+
+
+        private int _idPaciente;
+        public int IdPaciente
+        {
+            get { return _idPaciente; }
+            set { _idPaciente = value; }
+        }
+
+        private DateTime _fechaHora;
+        public DateTime FechaHora
+        {
+            get { return _fechaHora; }
+            set { _fechaHora = value; }
+        }
+
+        private string _motivo;
+        public string Motivo
+        {
+            get { return _motivo; }
+            set { _motivo = value; }
+        }
+
+        private string _estado;
+        public string Estado
+        {
+            get { return _estado; }
+            set { _estado = value; }
+        }
+
+        private DateTime? _horaLlegada;
+        public DateTime? HoraLlegada
+        {
+            get { return _horaLlegada; }
+            set { _horaLlegada = value; }
         }
     }
 }
