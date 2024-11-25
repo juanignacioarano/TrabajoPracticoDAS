@@ -44,7 +44,9 @@ namespace GUI
 
             dgvTurno.DataSource = null;
             dgvTurno.DataSource = new BLLTurno().ListarTurnos();
-
+            dgvTurno.Columns["IdMedico"].Visible = false;
+            dgvTurno.Columns["IdPaciente"].Visible = false;
+            
             Limpiar();
 
         }
@@ -92,6 +94,8 @@ namespace GUI
 
             dgvTurno.DataSource = null;
             dgvTurno.DataSource = turnos;
+            dgvTurno.Columns["IdMedico"].Visible = false;
+            dgvTurno.Columns["IdPaciente"].Visible = false;
         }
 
         private void txtNombreFiltro_TextChanged(object sender, EventArgs e)
@@ -150,11 +154,14 @@ namespace GUI
                 return;
             }
 
-            int idTurno = int.Parse(txtId.Text);
-            new BLLTurno().RegistrarLlegada(idTurno, DateTime.Now);
+            DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea presentar el turno?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+
+                int idTurno = int.Parse(txtId.Text);
+                new BLLTurno().RegistrarLlegada(idTurno, DateTime.Now);
+            }
             Recargar();
-
-
         }
 
         private void dgvTurno_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -182,6 +189,7 @@ namespace GUI
                 new BLLTurno().CancelarTurno(idTurno);
             }
 
+            Recargar();
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
@@ -200,6 +208,7 @@ namespace GUI
                 new BLLTurno().EliminarTurno(idTurno);
             }
 
+            Recargar();
         }
 
         private void dtpFechaTurno_ValueChanged(object sender, EventArgs e)
